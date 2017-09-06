@@ -40,14 +40,17 @@ win.add(label);
 var iadattributes = require('com.gaurang.iadattributes');
 Ti.API.info("module is => " + iadattributes);
 
-var eventListenerAtt = function(e){
-	Ti.API.info("Got Value From Attributes : " + JSON.stringify(e));
-	label.text = JSON.stringify(e);
-};
+iadattributes.addEventListener("analyticsInfo", function(e){
+  if(e.error != null){
+    Ti.API.warn("iAds error: " + e.error);
+  } else if(e.message != null){
+    var response = JSON.stringify(e.message);
+    console.log("iAds ADC attribution: " + response);
+    label.text = response;
+  }
+});
+iadattributes.getAttribution();
 
-iadattributes.addEventListener("analyticsInfo", eventListenerAtt);
-
-label.text = iadattributes.getAttribution();
 var removeListener = function(e){
 	iadattributes.removeEventListener("analyticsInfo", eventListenerAtt);
 };
@@ -71,13 +74,15 @@ win.addEventListener('close', removeListener);
 var iadattributes = require('com.gaurang.iadattributes');
 Ti.API.info("module is => " + iadattributes);
 
-var eventListenerAtt = function(e){
-	Ti.API.info("Got Value From Attributes : " + JSON.stringify(e));
-	$.lblText.text = JSON.stringify(e);
-};
-
-iadattributes.addEventListener("analyticsInfo", eventListenerAtt);
-
+iadattributes.addEventListener("analyticsInfo", function(e){
+  if(e.error != null){
+    Ti.API.warn("iAds error: " + e.error);
+  } else if(e.message != null){
+    var response = JSON.stringify(e.message);
+    Ti.API.info("iAds ADC attribution: " + response);
+    $.lblText.text = response;
+  }
+});
 $.lblText.text = iadattributes.getAttribution();
 
 var removeListener = function(e){

@@ -83,14 +83,14 @@
 - (void)getAnaliticsDataWithBlockNew {
     
     if (![[ADClient sharedClient] respondsToSelector:@selector(requestAttributionDetailsWithBlock:)]) {
-        [self fireEvent:@"analyticsInfo" withObject:@{@"message" : @"API is too older"}];
+        [self fireEvent:@"analyticsInfo" withObject:@{@"error" : @"iAds API not supported" }];
         return;
     }
     
     [[ADClient sharedClient] requestAttributionDetailsWithBlock:^(NSDictionary *details, NSError *error) {
         if (error) {
             NSLog(@"requestAttributionDetailsWithBlock returned error: %@", error);
-            [self fireEvent:@"analyticsInfo" withObject:@{@"message" : error.localizedDescription}];
+            [self fireEvent:@"analyticsInfo" withObject:@{@"error" : error.localizedDescription }];
             return;
         }
 
@@ -106,12 +106,12 @@
         NSString * string = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
         
         if (errorJson != nil){
-            [self fireEvent:@"analyticsInfo" withObject:@{@"message" : errorJson.localizedDescription}];
+            [self fireEvent:@"analyticsInfo" withObject:@{@"error" : errorJson.localizedDescription }];
         }
         else if (errorJson == nil && string != nil) {
-            [self fireEvent:@"analyticsInfo" withObject:@{@"message" : string}];
+            [self fireEvent:@"analyticsInfo" withObject:@{ @"message" : string}];
         }else {
-            [self fireEvent:@"analyticsInfo" withObject:@{@"message" : @"Invalid Access"}];
+            [self fireEvent:@"analyticsInfo" withObject:@{ @"error" : @"Invalid Access" }];
         }
     }];
     
