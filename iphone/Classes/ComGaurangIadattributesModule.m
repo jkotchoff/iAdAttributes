@@ -18,7 +18,7 @@
 // this is generated for your module, please do not change it
 -(id)moduleGUID
 {
-	return @"2762016e-1a30-4f8d-b7f5-e648df2f48d1";
+	return @"61c42b8a-7888-4af2-aa4a-e0f180c84fc1";
 }
 
 // this is generated for your module, please do not change it
@@ -35,7 +35,7 @@
 	// you *must* call the superclass
 	[super startup];
 
-	NSLog(@"[INFO] %@ loaded",self);
+	NSLog(@"[DEBUG] %@ loaded",self);
 }
 
 -(void)shutdown:(id)sender
@@ -46,14 +46,6 @@
 
 	// you *must* call the superclass
 	[super shutdown:sender];
-}
-
-#pragma mark Cleanup
-
--(void)dealloc
-{
-	// release any resources that have been retained by the module
-	[super dealloc];
 }
 
 #pragma mark Internal Memory Management
@@ -91,7 +83,7 @@
 - (void)getAnaliticsDataWithBlockNew {
     
     if (![[ADClient sharedClient] respondsToSelector:@selector(requestAttributionDetailsWithBlock:)]) {
-        [self fireEvent:@"analyticsInfo" withObject:@{@"message" : @"API is too older"}];        
+        [self fireEvent:@"analyticsInfo" withObject:@{@"message" : @"API is too older"}];
         return;
     }
     
@@ -101,33 +93,12 @@
             [self fireEvent:@"analyticsInfo" withObject:@{@"message" : error.localizedDescription}];
             return;
         }
-        
-        NSDictionary *attributionInfo = details[@"Version3.1"];
-        if (!attributionInfo) {
-            NSLog(@"no details for version 3.1: %@", details);
-            [self fireEvent:@"analyticsInfo" withObject:@{@"message" : details}];
-            
-            return;
-        }
-        
-        NSDictionary *attributionContext = @{
-                                             @"campaign" : @{
-                                                     @"iad-attribution" : @"iad-attribution",
-                                                     @"iad-click-date" : attributionInfo[@"iad-click-date"] ?: @"unknown",
-                                                     @"iad-conversion-date" : attributionInfo[@"iad-conversion-date"] ?: @"unknown",
-                                                     @"iad-org-name" : attributionInfo[@"iad-org-name"] ?: @"unknown",
-                                                     @"iad-campaign-id" : attributionInfo[@"iad-campaign-id"] ?: @"unknown",
-                                                     @"iad-campaign-name" : attributionInfo[@"iad-campaign-name"] ?: @"unknown",
-                                                     @"iad-adgroup-id" : attributionInfo[@"iad-adgroup-id"] ?: @"unknown",
-                                                     @"iad-adgroup-name" : attributionInfo[@"iad-adgroup-name"] ?: @"unknown",
-                                                     @"iad-keyword" : attributionInfo[@"iad-keyword"] ?: @"unknown"
-                                                     }
-                                             };
-        
-        NSMutableDictionary *mergedContext = [NSMutableDictionary dictionaryWithCapacity:attributionContext.count];
-        [mergedContext addEntriesFromDictionary:attributionContext];
+
+        NSMutableDictionary *mergedContext = [NSMutableDictionary dictionaryWithCapacity:details.count];
+
+        [mergedContext addEntriesFromDictionary:details];
         NSLog(@"=== >> %@", mergedContext);
-        
+
         NSError *errorJson;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:mergedContext
                                                            options:NSJSONWritingPrettyPrinted
@@ -135,7 +106,7 @@
         NSString * string = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
         
         if (errorJson != nil){
-        	[self fireEvent:@"analyticsInfo" withObject:@{@"message" : errorJson.localizedDescription}];
+            [self fireEvent:@"analyticsInfo" withObject:@{@"message" : errorJson.localizedDescription}];
         }
         else if (errorJson == nil && string != nil) {
             [self fireEvent:@"analyticsInfo" withObject:@{@"message" : string}];
@@ -147,13 +118,12 @@
     
 }
 
-
 -(id)example:(id)args
 {
 	// example method
 	return @"hello world";
-    
 }
+
 -(id)getAttribution:(id)args
 {
     [self getAnaliticsDataWithBlockNew];
