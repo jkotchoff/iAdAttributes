@@ -5,14 +5,14 @@
 version: 1.0
 apiversion: 2
 architectures: armv7 arm64 i386 x86_64
-description: iAdAttributes
+description: This exposes the iOS iAd API as a Titanium module
 author: Gaurang Chhatbar
-license: Specify your license
+license: Apache 2.0
 copyright: @2017
 
 # these should not be edited
 name: iAdAttributes
 moduleid: com.gaurang.iadattributes
-guid: 2762016e-1a30-4f8d-b7f5-e648df2f48d1
+guid: 61c42b8a-7888-4af2-aa4a-e0f180c84fc1
 platform: iphone
-minsdk: 6.0.0.GA
+minsdk: 6.1.2.GA
