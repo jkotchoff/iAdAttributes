@@ -1,6 +1,6 @@
 # iAdAttributes
 
-Attribution API is called as per following documentation.
+Attribution API is called as per following documentation. Find the Titanium module in the `build` directory.
 
 https://searchads.apple.com/help/pdf/attribution-api.pdf
 
